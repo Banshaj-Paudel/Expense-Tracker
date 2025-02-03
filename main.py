@@ -1,4 +1,5 @@
 import datetime
+import argparse
 
 class Expense:
     def __init__(self, amount, category):
@@ -39,23 +40,58 @@ class ExpenseTracker:
                 })
         print(categories)
     
-    def generate_report(start_date,end_date):
-        pass
+    def generate_report(self, start_date, end_date):
+        filtered_expenses = [expense for expense in self.expenses if start_date <= expense.date <= end_date]
+        for expense in filtered_expenses:
+            print(expense)
 
     def display_expenses(self):
         for i in self.expenses:
             print(i)
 
+def main():
+    tracker = ExpenseTracker()
+    print("Welcome to the Expense Tracker!")
+    print("Available commands: add <amount> <category>, categorize, display, report <start_date> <end_date>, exit")
 
-ex1 = Expense(100,"food")
-ex2 = Expense(300,"food")
-ex3 = Expense(200,"bills")
-ex4 = Expense(1200,"fun")
-ex5 = Expense(1020,"loan")
-ext1 = ExpenseTracker()
-ext1.add_expenses(ex1)
-ext1.add_expenses(ex2)
-ext1.add_expenses(ex3)
-ext1.add_expenses(ex4)
-ext1.add_expenses(ex5)
-ext1.display_expenses()
+    while True:
+        command = input("\nEnter command: ").strip().split()
+        if not command:
+            continue
+
+        if command[0] == "exit":
+            print("Exiting the Expense Tracker. Goodbye!")
+            break
+
+        elif command[0] == "add":
+            if len(command) != 3:
+                print("Invalid command. Usage: add <amount> <category>")
+                continue
+            try:
+                amount = float(command[1])
+                category = command[2]
+                expense = Expense(amount, category)
+                tracker.add_expenses(expense)
+                print(f"Added expense: {expense}")
+            except ValueError:
+                print("Invalid amount. Please enter a valid number.")
+
+        elif command[0] == "categorize":
+            tracker.categorize_expenses()
+
+        elif command[0] == "display":
+            tracker.display_expenses()
+
+        elif command[0] == "report":
+            if len(command) != 3:
+                print("Invalid command. Usage: report <start_date> <end_date>")
+                continue
+            start_date = command[1]
+            end_date = command[2]
+            tracker.generate_report(start_date, end_date)
+
+        else:
+            print("Invalid command. Available commands: add, categorize, display, report, exit")
+
+if __name__ == "__main__":
+    main()
